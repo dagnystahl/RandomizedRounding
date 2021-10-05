@@ -102,4 +102,26 @@ def run_random_trials():
 
     print(randomized_rounding(sets, weights, n, set_number))
 
-run_random_trials()
+def run_random_rounding_n_times(iters, sets, weights, n, set_number):
+    best_cover = []
+    best_cover_weight = 99999
+    for i in range(1,iters+1):
+        print("Running trial #"+str(i))
+        (cover, cover_weight) = randomized_rounding(sets, weights, n, set_number)
+        print("Cover has "+str(len(cover))+" items and weight "+str(cover_weight))
+        if (cover_weight < best_cover_weight):
+            best_cover_weight = cover_weight
+            best_cover = cover
+    print("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight))
+    print("Contents of best cover: "+str(best_cover))
+
+
+# run_random_trials()
+
+# test list of 10
+sets = [[1,2], [1,3], [2,3], [4,5], [6,7], [8,9], [9,10], [1,2,3], [4,8,3,2], [1,4,8], [4,2,5]]
+set_number = 11
+weights = [1,5,7,3,4,6,8,4,3,7,3]
+n = 10 #U constructor
+
+run_random_rounding_n_times(10, sets, weights, n, set_number)
