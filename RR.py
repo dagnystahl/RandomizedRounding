@@ -4,7 +4,7 @@
 #############################
 
 import random
-import itertools
+# import itertools
 
 ###########################
 #  Part 1: Read in input  #
@@ -115,6 +115,46 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
     print("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight))
     print("Contents of best cover: "+str(best_cover))
 
+###########################
+# Part 7: Generate Inputs #
+###########################
+
+def generate_input(n, num_subsets, max_subset_length):
+    num_items_in_union = n # english translation because all of these n's are ~*confusing*~
+    subsets = []
+    weights = []
+    for i in range(0,num_subsets):
+        # make subsets
+        sub_temp = []
+        rand_sub_len = random.randint(1,max_subset_length)
+        for j in range(0,rand_sub_len):
+            sub_temp.append(random.randint(1,n))
+        subsets.append(sub_temp)
+
+        # make weight list
+        weights.append(.5)
+
+    contents_of_subsets = [item for sublist in subsets for item in sublist]
+    contents_of_subsets = list(set(contents_of_subsets))
+    union = list(range(1, num_items_in_union+1 ))
+    while (contents_of_subsets != union): # if not all of the numbers are in the subsets, replace last subset until they are
+        # make subsets
+        sub_temp = []
+        rand_sub_len = random.randint(1,max_subset_length)
+        for j in range(0,rand_sub_len):
+            sub_temp.append(random.randint(1,n))
+        subsets.pop()
+        subsets.append(sub_temp)
+
+        # update contents_of_sets
+        contents_of_subsets = [item for sublist in subsets for item in sublist]
+        contents_of_subsets = list(set(contents_of_subsets))
+
+    return (subsets, weights, num_items_in_union, num_subsets)
+
+#####################
+# Part 8: Code Time #
+#####################
 
 # run_random_trials()
 
@@ -124,4 +164,8 @@ set_number = 11
 weights = [1,5,7,3,4,6,8,4,3,7,3]
 n = 10 #U constructor
 
-run_random_rounding_n_times(10, sets, weights, n, set_number)
+# run_random_rounding_n_times(10, sets, weights, n, set_number)
+
+# test the input generator
+(subs, dubs, n, num_subs) = generate_input(5, 10, 3)
+print("Subsets: "+str(subs)+"\nWeights: "+str(dubs)+"\nN: "+str(n)+"\nNumber of Subsets: "+str(len(subs)))
