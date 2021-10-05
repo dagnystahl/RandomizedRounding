@@ -38,10 +38,11 @@ def randomized_rounding(sets, weights, n, set_number):
     cover = []
     UB_weight_sum = sum([weights[i]*X_star[i] for i in range(set_number)])
     unused_set_inds = list(range(0,set_number))
-    while( list(set(list(itertools.chain.from_iterable(cover)))) != U ): #check this comparison
+    while( len(list(set(list(itertools.chain.from_iterable(cover))))) != n ): #check this comparison
         if(cover_weight >= (4 * set_number * UB_weight_sum)):
             cover = []
             cover_weight = 0
+            unused_set_inds = list(range(0,set_number))
         else:
             for index in unused_set_inds:
                 if random.random() <= X_star[index]:
