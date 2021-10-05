@@ -3,15 +3,17 @@
 # Dagny, Luke, Elise, Kylee #
 #############################
 
-#Imports go here
+import random
+import itertools
 
 ###########################
 #  Part 1: Read in input  #
 ###########################
 
-s = [[1,2], [1,3], [2,3]]
-w = [1,1,1]
-U = [1,2,3] #dont technically need
+sets = [[1,2], [1,3], [2,3]]
+set_number = 3
+weights = [1,1,1]
+n = 3 #U constructor
 
 ####################################
 #    Part 2: Linear Programming    #
@@ -28,8 +30,26 @@ def simplex_solver():
 #   finding a valid solution  #
 ###############################
 
-def randomized_rounding(s, w):
-    return 0
+def randomized_rounding(sets, weights, n, set_number):
+    U = list(range(1, n+1 ))
+    X_star = simplex_solver() #1D array of probs
+    X_star = [0.5, 0.5, 0.5] #REMOVE
+    cover_weight = 0
+    cover = []
+    UB_weight_sum = sum([weights[i]*X_star[i] for i in range(set_number)])
+    unused_set_inds = list(range(0,set_number))
+    while( list(set(list(itertools.chain.from_iterable(cover)))) != U ): #check this comparison
+        if(cover_weight >= (4 * set_number * UB_weight_sum)):
+            cover = []
+            cover_weight = 0
+        else:
+            for index in unused_set_inds:
+                if random.random() <= X_star[index]:
+                    cover.append(sets[index])
+                    cover_weight += weights[index]
+                    unused_set_inds.remove(index)
+
+    return (cover, cover_weight)
 
 
 ############################
@@ -46,3 +66,12 @@ def greedy(s, w):
 
 def trivial_random(s, w):
     return 0
+
+
+
+
+
+
+
+
+randomized_rounding(sets, weights, n, set_number)
