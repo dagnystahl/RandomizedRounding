@@ -33,7 +33,8 @@ def simplex_solver():
 def randomized_rounding(sets, weights, n, set_number):
     U = list(range(1, n+1 ))
     X_star = simplex_solver() #1D array of probs
-    X_star = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5] #REMOVE
+    # X_star = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5] #REMOVE
+    X_star = [0.5 for i in range(0,set_number)]
     cover_weight = 0
     cover = []
     UB_weight_sum = sum([weights[i]*X_star[i] for i in range(set_number)])
@@ -113,7 +114,7 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
             best_cover_weight = cover_weight
             best_cover = cover
     print("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight))
-    print("Contents of best cover: "+str(best_cover))
+    # print("Contents of best cover: "+str(best_cover))
 
 ###########################
 # Part 7: Generate Inputs #
@@ -175,15 +176,21 @@ def print_input_to_file(num_elements, subsets, weights):
 # run_random_trials()
 
 # test list of 10
-sets = [[1,2], [1,3], [2,3], [4,5], [6,7], [8,9], [9,10], [1,2,3], [4,8,3,2], [1,4,8], [4,2,5]]
-set_number = 11
-weights = [1,5,7,3,4,6,8,4,3,7,3]
-n = 10 #U constructor
-
-run_random_rounding_n_times(10, sets, weights, n, set_number)
+# sets = [[1,2], [1,3], [2,3], [4,5], [6,7], [8,9], [9,10], [1,2,3], [4,8,3,2], [1,4,8], [4,2,5]]
+# set_number = 11
+# weights = [1,5,7,3,4,6,8,4,3,7,3]
+# n = 10 #U constructor
+# run_random_rounding_n_times(10, sets, weights, n, set_number)
 
 # test the input generator
 # (subs, dubs, n, num_subs) = generate_input(5, 10, 3)
 # print("Subsets: "+str(subs)+"\nWeights: "+str(dubs)+"\nN: "+str(n)+"\nNumber of Subsets: "+str(len(subs)))
-
 # print_input_to_file(n, subs, dubs)
+
+# test a max input generator file
+# (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
+# print_input_to_file(n, subs, dubs)
+
+# test a max big input on the RR alg
+(subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
+run_random_rounding_n_times(10, subs, dubs, n, num_subs)
