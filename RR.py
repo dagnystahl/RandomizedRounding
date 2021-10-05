@@ -38,18 +38,22 @@ def randomized_rounding(sets, weights, n, set_number):
     cover = []
     UB_weight_sum = sum([weights[i]*X_star[i] for i in range(set_number)])
     unused_set_inds = list(range(0,set_number))
+    flat_list = []
     # THE LINE BELOW HANGS SOMETIMES
-    while( len(list(set(list(itertools.chain.from_iterable(cover))))) != n ): #check this comparison 
+    while( len(list(set(flat_list))) != n ): #check this comparison 
         if(cover_weight >= (4 * set_number * UB_weight_sum)):
             cover = []
             cover_weight = 0
             unused_set_inds = list(range(0,set_number))
+            flat_list = []
         else:
             for index in unused_set_inds:
                 if random.random() <= X_star[index]:
                     cover.append(sets[index])
                     cover_weight += weights[index]
                     unused_set_inds.remove(index)
+            flat_list = [item for sublist in cover for item in sublist]
+            flat_list = list(set(flat_list))
 
     return (cover, cover_weight)
 
@@ -95,8 +99,8 @@ def run_random_trials():
     # doesn't always get all 10 elements, likes to skip 6 and 7
     sets = [[1,2], [1,3], [2,3], [4,5], [6,7], [8,9], [9,10], [1,2,3], [4,8,3,2], [1,4,8], [4,2,5]]
     set_number = 11
-    weights = [1,456,7,3,4,6,98,4,3,7,32]
-    n = 8 #U constructor
+    weights = [1,5,7,3,4,6,8,4,3,7,3]
+    n = 10 #U constructor
 
     print(randomized_rounding(sets, weights, n, set_number))
 
