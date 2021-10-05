@@ -191,6 +191,6 @@ def print_input_to_file(num_elements, subsets, weights):
 # (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
 # print_input_to_file(n, subs, dubs)
 
-# test a max big input on the RR alg
+# test a max big input on the RR alg (params: n<=1000, num_subsets<=500, max_subset_size=n)
 (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
-run_random_rounding_n_times(10, subs, dubs, n, num_subs)
+run_random_rounding_n_times(10000, subs, dubs, n, num_subs)
