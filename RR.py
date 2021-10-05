@@ -152,6 +152,20 @@ def generate_input(n, num_subsets, max_subset_length):
 
     return (subsets, weights, num_items_in_union, num_subsets)
 
+def print_input_to_file(num_elements, subsets, weights):
+    output_file = open("rando-algs-input.txt", 'w')
+    output_file.write(str(num_elements)+"\n")
+    output_file.write(str(len(subsets))+"\n")
+    for subset in subsets: # for each subset in the subset array
+        temp_sub_str = ""
+        for i in range(0,len(subset)): # create a string out of the subset elements
+            temp_sub_str=temp_sub_str+str(subset[i])
+            if (i<(len(subset)-1)):
+                temp_sub_str=temp_sub_str+" "
+        output_file.write(temp_sub_str+"\n") # add that string version of the subset to the outfile
+        output_file.write(str(weights[0])+"\n") # this is hardcoded to insert the first element of weights, change
+    output_file.close()
+
 #####################
 # Part 8: Code Time #
 #####################
@@ -169,3 +183,5 @@ n = 10 #U constructor
 # test the input generator
 (subs, dubs, n, num_subs) = generate_input(5, 10, 3)
 print("Subsets: "+str(subs)+"\nWeights: "+str(dubs)+"\nN: "+str(n)+"\nNumber of Subsets: "+str(len(subs)))
+
+print_input_to_file(n, subs, dubs)
