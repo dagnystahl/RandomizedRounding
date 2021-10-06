@@ -206,7 +206,7 @@ def print_input_to_file(num_elements, subsets, weights):
 
 # test a max big input on the RR alg (params: n<=1000, num_subsets<=500, max_subset_size=n)
 (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
-(cov_freq, cov_weight_freq) = run_random_rounding_n_times(100, subs, dubs, n, num_subs)
+(cov_freq, cov_weight_freq) = run_random_rounding_n_times(1000, subs, dubs, n, num_subs)
 from collections import Counter
 print("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values())))
 print("Freq of cover trial covers: "+str(Counter(cov_freq.values())))
