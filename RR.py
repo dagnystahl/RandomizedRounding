@@ -150,7 +150,7 @@ def generate_input(n, num_subsets, max_subset_length):
         subsets.append(sub_temp)
 
         # make weight list
-        weights.append(.5+(i/num_subsets)) # making up fake weights
+        weights.append(random.randint(1,1000)) # making up fake weights
 
     contents_of_subsets = [item for sublist in subsets for item in sublist]
     contents_of_subsets = list(set(contents_of_subsets))
@@ -217,8 +217,8 @@ def elise_verbose_output(): # this prints useful info and the input file to elis
     output_file = open("elise_verbose_out.txt", 'w')
     input_num_max = 1000
     input_num_of_subs = 500
-    input_max_sub_size = 250
-    num_trials_to_run = 100000
+    input_max_sub_size = 100
+    num_trials_to_run = 1000
     output_file.write("Input details:\nMax number: "+str(input_num_max)+"\nNumber of subsets: "+str(input_num_of_subs)+"\nMax subset size: "+str(input_max_sub_size)+"\n\n")
     (subs, dubs, n, num_subs) = generate_input(input_num_max, input_num_of_subs, input_max_sub_size)
     print_input_to_file(n, subs, dubs)
