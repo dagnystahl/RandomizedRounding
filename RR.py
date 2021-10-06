@@ -205,7 +205,7 @@ def read_input_file(filename):
             if (char != ' '):
                 temp_sub.append(int(char))
         sets.append(temp_sub)
-        weights.append(int(stripped[i+1]))
+        weights.append(float(stripped[i+1]))
     
     return (sets, weights, n, set_number)
 
