@@ -46,9 +46,9 @@ def simplex_solver(sets,weights,n,set_number):
 
 def randomized_rounding(sets, weights, n, set_number):
     U = list(range(1, n+1 ))
-    X_star = simplex_solver(sets,weights,n,set_number) #1D array of probs
+    # X_star = simplex_solver(sets,weights,n,set_number) #1D array of probs
     # X_star = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5] #REMOVE
-   # X_star = [0.5 for i in range(0,set_number)]
+    X_star = [0.5 for i in range(0,set_number)]
     cover_weight = 0
     cover = []
     cover_inds = []
