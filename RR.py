@@ -4,6 +4,7 @@
 #############################
 
 import random
+import scipy.optimize
 # import itertools
 
 ###########################
@@ -21,8 +22,21 @@ import random
 ####################################
 
 # x* = simplex(...)
-def simplex_solver():
-    return 0
+def simplex_solver(sets,weights,n,set_number):
+    A=[]
+    for j in list(range(1,n+1)):
+        row=[]
+        for i,s in enumerate(sets):
+            if j in s:
+                row.append(-1)
+            else:
+                row.append(0)
+            A.append(row)
+    b = [-1 for i in range(n)]
+  #  print(b)
+   # print(A)
+    X_star = scipy.optimize.linprog(weights,A_ub=A,b_ub=b,bounds=(0,1))
+    return X_star.x
 
 
 ###############################
@@ -32,9 +46,9 @@ def simplex_solver():
 
 def randomized_rounding(sets, weights, n, set_number):
     U = list(range(1, n+1 ))
-    X_star = simplex_solver() #1D array of probs
+    X_star = simplex_solver(sets,weights,n,set_number) #1D array of probs
     # X_star = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5] #REMOVE
-    X_star = [0.5 for i in range(0,set_number)]
+   # X_star = [0.5 for i in range(0,set_number)]
     cover_weight = 0
     cover = []
     cover_inds = []
