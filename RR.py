@@ -52,7 +52,7 @@ def randomized_rounding(sets, weights, n, set_number):
             for index in unused_set_inds:
                 if random.random() <= X_star[index]:
                     cover.append(sets[index])
-                    cover_inds.append(index)
+                    cover_inds.append(index+1) # as per the problem statement, 1-indexing subsets in final answer
                     cover_weight += weights[index]
                     unused_set_inds.remove(index)
             flat_list = [item for sublist in cover for item in sublist]
