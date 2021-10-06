@@ -106,14 +106,27 @@ def run_random_trials():
 def run_random_rounding_n_times(iters, sets, weights, n, set_number):
     best_cover = []
     best_cover_weight = 99999
+    cover_frequency = {}
+    weight_frequency = {}
     for i in range(1,iters+1):
         print("Running trial #"+str(i))
         (cover, cover_weight) = randomized_rounding(sets, weights, n, set_number)
         print("Cover has "+str(len(cover))+" items and weight "+str(cover_weight))
+        # count cover frequency
+        if (str(cover) in cover_frequency):
+            cover_frequency[str(cover)]+=1
+        else:
+            cover_frequency[str(cover)] = 1
+        # count cover weight frequency
+        if (cover_weight in weight_frequency):
+            weight_frequency[cover_weight]+=1
+        else:
+            weight_frequency[cover_weight]=1
         if (cover_weight < best_cover_weight):
             best_cover_weight = cover_weight
             best_cover = cover
     print("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight))
+    return(cover_frequency,weight_frequency)
     # print("Contents of best cover: "+str(best_cover))
 
 ###########################
@@ -193,4 +206,7 @@ def print_input_to_file(num_elements, subsets, weights):
 
 # test a max big input on the RR alg (params: n<=1000, num_subsets<=500, max_subset_size=n)
 (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
-run_random_rounding_n_times(10000, subs, dubs, n, num_subs)
+(cov_freq, cov_weight_freq) = run_random_rounding_n_times(100, subs, dubs, n, num_subs)
+from collections import Counter
+print("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values())))
+print("Freq of cover trial covers: "+str(Counter(cov_freq.values())))
