@@ -218,7 +218,7 @@ def elise_verbose_output(): # this prints useful info and the input file to elis
     input_num_max = 1000
     input_num_of_subs = 500
     input_max_sub_size = 250
-    num_trials_to_run = 100
+    num_trials_to_run = 100000
     output_file.write("Input details:\nMax number: "+str(input_num_max)+"\nNumber of subsets: "+str(input_num_of_subs)+"\nMax subset size: "+str(input_max_sub_size)+"\n\n")
     (subs, dubs, n, num_subs) = generate_input(input_num_max, input_num_of_subs, input_max_sub_size)
     print_input_to_file(n, subs, dubs)
@@ -267,10 +267,11 @@ def elise_verbose_output(): # this prints useful info and the input file to elis
 # print("Freq of cover trial covers: "+str(Counter(cov_freq.values())))
 # print("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values())))
 
-# elise_verbose_output()
+elise_verbose_output()
 
-(sets, weights, n, set_number) = read_input_file("rando-algs-input.txt")
-print(sets)
-print(weights)
-print(n)
-print(set_number)
+# test file input parsing
+# (sets, weights, n, set_number) = read_input_file("rando-algs-input.txt")
+# print(sets)
+# print(weights)
+# print(n)
+# print(set_number)
