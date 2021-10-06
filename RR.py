@@ -161,7 +161,7 @@ def generate_input(n, num_subsets, max_subset_length):
         rand_sub_len = random.randint(1,max_subset_length)
         for j in range(0,rand_sub_len):
             sub_temp.append(random.randint(1,n))
-        subsets.append(sub_temp)
+        subsets.append(list(set(sub_temp)))
 
         # make weight list
         weights.append(random.randint(1,1000)) # making up fake weights
