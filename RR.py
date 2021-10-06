@@ -37,12 +37,14 @@ def randomized_rounding(sets, weights, n, set_number):
     X_star = [0.5 for i in range(0,set_number)]
     cover_weight = 0
     cover = []
+    cover_inds = []
     UB_weight_sum = sum([weights[i]*X_star[i] for i in range(set_number)])
     unused_set_inds = list(range(0,set_number))
     flat_list = []
     while( len(list(set(flat_list))) != n ):
         if(cover_weight >= (4 * set_number * UB_weight_sum)):
             cover = []
+            cover_inds = []
             cover_weight = 0
             unused_set_inds = list(range(0,set_number))
             flat_list = []
@@ -50,12 +52,13 @@ def randomized_rounding(sets, weights, n, set_number):
             for index in unused_set_inds:
                 if random.random() <= X_star[index]:
                     cover.append(sets[index])
+                    cover_inds.append(index)
                     cover_weight += weights[index]
                     unused_set_inds.remove(index)
             flat_list = [item for sublist in cover for item in sublist]
             flat_list = list(set(flat_list))
 
-    return (cover, cover_weight)
+    return (cover, cover_weight, cover_inds)
 
 
 ############################
@@ -110,7 +113,7 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
     weight_frequency = {}
     for i in range(1,iters+1):
         print("Running trial #"+str(i))
-        (cover, cover_weight) = randomized_rounding(sets, weights, n, set_number)
+        (cover, cover_weight, cover_inds) = randomized_rounding(sets, weights, n, set_number)
         cover.sort()
         # print("Cover has "+str(len(cover))+" items and weight "+str(cover_weight))
         # count cover frequency
@@ -127,7 +130,7 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
             best_cover_weight = cover_weight
             best_cover = cover
     print("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight))
-    return(best_cover, best_cover_weight, cover_frequency,weight_frequency)
+    return(best_cover, best_cover_weight, cover_frequency,weight_frequency, cover_inds)
     # print("Contents of best cover: "+str(best_cover))
 
 ###########################
@@ -187,7 +190,7 @@ def print_input_to_file(num_elements, subsets, weights):
 # Part 8: Code Time #
 #####################
 
-def elise_verbose_output():
+def elise_verbose_output(): # this prints useful info and the input file to elise_verbose_out.txt
     output_file = open("elise_verbose_out.txt", 'w')
     input_num_max = 1000
     input_num_of_subs = 500
@@ -197,12 +200,13 @@ def elise_verbose_output():
     (subs, dubs, n, num_subs) = generate_input(input_num_max, input_num_of_subs, input_max_sub_size)
     print_input_to_file(n, subs, dubs)
     output_file.write("Running "+str(num_trials_to_run)+" trials\n\n")
-    (best_cover, best_cover_weight, cov_freq, cov_weight_freq) = run_random_rounding_n_times(100, subs, dubs, n, num_subs)
+    (best_cover, best_cover_weight, cov_freq, cov_weight_freq, cov_inds) = run_random_rounding_n_times(100, subs, dubs, n, num_subs)
     from collections import Counter
     output_file.write("Freq of cover trial covers: "+str(Counter(cov_freq.values()))+"\n")
     output_file.write("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values()))+"\n")
     output_file.write("\n")
     output_file.write("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight)+"\n\n")
+    output_file.write("Best cover contents as indexes: \n"+str(cov_inds)+"\n\n")
     output_file.write("Input used attached below\n")
     output_file.write("\n")
     output_file.close()
