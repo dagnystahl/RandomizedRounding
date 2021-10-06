@@ -186,6 +186,29 @@ def print_input_to_file(num_elements, subsets, weights):
         output_file.write(str(weights[counter])+"\n") # this is hardcoded to insert the first element of weights, change
     output_file.close()
 
+def read_input_file(filename):
+    with open(filename) as file:
+        lines = file.readlines()
+    stripped = []
+    for line in lines:
+        stripped.append(line.rstrip())
+
+    n = int(stripped[0])
+    set_number = int(stripped[1])
+    sets = []
+    weights = []
+
+    for i in range(2,set_number+4,2):
+        # sets.append(lines[i])
+        temp_sub = []
+        for char in stripped[i]:
+            if (char != ' '):
+                temp_sub.append(int(char))
+        sets.append(temp_sub)
+        weights.append(int(stripped[i+1]))
+    
+    return (sets, weights, n, set_number)
+
 #####################
 # Part 8: Code Time #
 #####################
@@ -244,4 +267,10 @@ def elise_verbose_output(): # this prints useful info and the input file to elis
 # print("Freq of cover trial covers: "+str(Counter(cov_freq.values())))
 # print("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values())))
 
-elise_verbose_output()
+# elise_verbose_output()
+
+(sets, weights, n, set_number) = read_input_file("rando-algs-input.txt")
+print(sets)
+print(weights)
+print(n)
+print(set_number)
