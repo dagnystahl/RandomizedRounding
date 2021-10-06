@@ -10,10 +10,10 @@ import random
 #  Part 1: Read in input  #
 ###########################
 
-sets = [[1,2], [1,3], [2,3]]
-set_number = 3
-weights = [1,1,1]
-n = 3 #U constructor
+# sets = [[1,2], [1,3], [2,3]]
+# set_number = 3
+# weights = [1,1,1]
+# n = 3 #U constructor
 
 ####################################
 #    Part 2: Linear Programming    #
@@ -200,7 +200,7 @@ def elise_verbose_output(): # this prints useful info and the input file to elis
     (subs, dubs, n, num_subs) = generate_input(input_num_max, input_num_of_subs, input_max_sub_size)
     print_input_to_file(n, subs, dubs)
     output_file.write("Running "+str(num_trials_to_run)+" trials\n\n")
-    (best_cover, best_cover_weight, cov_freq, cov_weight_freq, cov_inds) = run_random_rounding_n_times(100, subs, dubs, n, num_subs)
+    (best_cover, best_cover_weight, cov_freq, cov_weight_freq, cov_inds) = run_random_rounding_n_times(num_trials_to_run, subs, dubs, n, num_subs)
     from collections import Counter
     output_file.write("Freq of cover trial covers: "+str(Counter(cov_freq.values()))+"\n")
     output_file.write("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values()))+"\n")
