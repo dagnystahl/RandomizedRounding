@@ -112,7 +112,7 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
         print("Running trial #"+str(i))
         (cover, cover_weight) = randomized_rounding(sets, weights, n, set_number)
         cover.sort()
-        print("Cover has "+str(len(cover))+" items and weight "+str(cover_weight))
+        # print("Cover has "+str(len(cover))+" items and weight "+str(cover_weight))
         # count cover frequency
         if (str(cover) in cover_frequency):
             cover_frequency[str(cover)]+=1
