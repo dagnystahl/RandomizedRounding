@@ -111,6 +111,7 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
     for i in range(1,iters+1):
         print("Running trial #"+str(i))
         (cover, cover_weight) = randomized_rounding(sets, weights, n, set_number)
+        cover.sort()
         print("Cover has "+str(len(cover))+" items and weight "+str(cover_weight))
         # count cover frequency
         if (str(cover) in cover_frequency):
@@ -126,7 +127,7 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
             best_cover_weight = cover_weight
             best_cover = cover
     print("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight))
-    return(cover_frequency,weight_frequency)
+    return(best_cover, best_cover_weight, cover_frequency,weight_frequency)
     # print("Contents of best cover: "+str(best_cover))
 
 ###########################
@@ -186,6 +187,34 @@ def print_input_to_file(num_elements, subsets, weights):
 # Part 8: Code Time #
 #####################
 
+def elise_verbose_output():
+    output_file = open("elise_verbose_out.txt", 'w')
+    input_num_max = 1000
+    input_num_of_subs = 500
+    input_max_sub_size = 250
+    num_trials_to_run = 100
+    output_file.write("Input details:\nMax number: "+str(input_num_max)+"\nNumber of subsets: "+str(input_num_of_subs)+"\nMax subset size: "+str(input_max_sub_size)+"\n\n")
+    (subs, dubs, n, num_subs) = generate_input(input_num_max, input_num_of_subs, input_max_sub_size)
+    print_input_to_file(n, subs, dubs)
+    output_file.write("Running "+str(num_trials_to_run)+" trials\n\n")
+    (best_cover, best_cover_weight, cov_freq, cov_weight_freq) = run_random_rounding_n_times(100, subs, dubs, n, num_subs)
+    from collections import Counter
+    output_file.write("Freq of cover trial covers: "+str(Counter(cov_freq.values()))+"\n")
+    output_file.write("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values()))+"\n")
+    output_file.write("\n")
+    output_file.write("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight)+"\n\n")
+    output_file.write("Input used attached below\n")
+    output_file.write("\n")
+    output_file.close()
+
+    f1 = open("elise_verbose_out.txt", 'a+')
+    f2 = open("rando-algs-input.txt", 'r')
+    
+    f1.write(f2.read())
+
+    f1.close()
+    f2.close()
+
 # run_random_trials()
 
 # test list of 10
@@ -205,8 +234,10 @@ def print_input_to_file(num_elements, subsets, weights):
 # print_input_to_file(n, subs, dubs)
 
 # test a max big input on the RR alg (params: n<=1000, num_subsets<=500, max_subset_size=n)
-(subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
-(cov_freq, cov_weight_freq) = run_random_rounding_n_times(1000, subs, dubs, n, num_subs)
-from collections import Counter
-print("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values())))
-print("Freq of cover trial covers: "+str(Counter(cov_freq.values())))
+# (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
+# (cov_freq, cov_weight_freq) = run_random_rounding_n_times(10000, subs, dubs, n, num_subs)
+# from collections import Counter
+# print("Freq of cover trial covers: "+str(Counter(cov_freq.values())))
+# print("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values())))
+
+elise_verbose_output()

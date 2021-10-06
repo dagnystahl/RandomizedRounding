@@ -1,3 +1,17 @@
+Input details:
+Max number: 1000
+Number of subsets: 500
+Max subset size: 250
+
+Running 100 trials
+
+Freq of cover trial covers: Counter({1: 100})
+Freq of cover trial weights: Counter({1: 98, 2: 1})
+
+Best cover has 155 items and weight 151.51999999999992
+
+Input used attached below
+
 1000
 500
 863 861 162 309 703 276 748 706 246 622 309 354 648 729 73 673 110 977 878 298 537 562 645 869 597 43 837 646 378 964 142 58 900 983 212 658 122 822 208 271 275 189 710 76 41 172 392 325
