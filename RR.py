@@ -20,18 +20,34 @@ import scipy.optimize
 #    Part 2: Linear Programming    #
 # finding the partial set Solution #
 ####################################
+def mathematica_solve(sets, weights, n, set_number):
+    # Mathematica uses A.x >= b rather than A.x <= b
+    A = [[1 if j in s else 0 for s in sets] for j in range(1, n+1)]
+    b = [1 for i in range(n)]
+    c = weights
+    lu = [[0, 1] for i in range(set_number)]
 
+    print(len(weights))
+    print(len(A), len(A[0]))
+    print(len(lu), len(lu[0]))
+
+    return ""
+    
+    # turns python-style vectors and matrices into mathematica
+    def mize(v):
+        return str(v).replace('[', '{').replace(']', '}')
+
+    return f"""
+        A = {mize(A)};
+        c = {mize(c)};
+        b = {mize(b)};
+        LU = {mize(lu)};
+        LinearProgramming[c, A, b, LU, Integers]
+    """
+    
 # x* = simplex(...)
 def simplex_solver(sets,weights,n,set_number):
-    A=[]
-    for j in list(range(1,n+1)):
-        row=[]
-        for i,s in enumerate(sets):
-            if j in s:
-                row.append(-1)
-            else:
-                row.append(0)
-            A.append(row)
+    A = [[-1 if j in s else 0 for s in sets] for j in range(1, n+1)]
     b = [-1 for i in range(n)]
   #  print(b)
    # print(A)
@@ -223,6 +239,9 @@ def read_input_file(filename):
     
     return (sets, weights, n, set_number)
 
+#sets, weights, n, set_number = read_input_file("rando-algs-input.txt");
+#print(mathematica_solve(sets, weights, n, set_number))
+#exit(0)
 #####################
 # Part 8: Code Time #
 #####################
