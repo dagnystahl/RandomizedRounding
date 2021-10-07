@@ -5,16 +5,81 @@
 
 import random
 import scipy.optimize
-# import itertools
 
 ###########################
-#  Part 1: Read in input  #
+#  Part 1: inputs  #
 ###########################
+def generate_input(n, num_subsets, max_subset_length):
+    num_items_in_union = n # english translation because all of these n's are ~*confusing*~
+    subsets = []
+    weights = []
+    for i in range(0,num_subsets):
+        # make subsets
+        sub_temp = []
+        rand_sub_len = random.randint(1,max_subset_length)
+        for j in range(0,rand_sub_len):
+            sub_temp.append(random.randint(1,n))
+        subsets.append(list(set(sub_temp)))
 
-# sets = [[1,2], [1,3], [2,3]]
-# set_number = 3
-# weights = [1,1,1]
-# n = 3 #U constructor
+        # make weight list
+        weights.append(random.randint(1,1000)) # making up fake weights
+
+    contents_of_subsets = [item for sublist in subsets for item in sublist]
+    contents_of_subsets = list(set(contents_of_subsets))
+    union = list(range(1, num_items_in_union+1 ))
+    while (contents_of_subsets != union): # if not all of the numbers are in the subsets, replace last subset until they are
+        # make subsets
+        sub_temp = []
+        rand_sub_len = random.randint(1,max_subset_length)
+        for j in range(0,rand_sub_len):
+            sub_temp.append(random.randint(1,n))
+        subsets.pop()
+        subsets.append(sub_temp)
+
+        # update contents_of_sets
+        contents_of_subsets = [item for sublist in subsets for item in sublist]
+        contents_of_subsets = list(set(contents_of_subsets))
+
+    return (subsets, weights, num_items_in_union, num_subsets)
+
+def print_input_to_file(num_elements, subsets, weights):
+    output_file = open("rando-algs-input.txt", 'w')
+    output_file.write(str(num_elements)+"\n")
+    output_file.write(str(len(subsets))+"\n")
+    counter = -1
+    for subset in subsets: # for each subset in the subset array
+        counter+=1
+        temp_sub_str = ""
+        for i in range(0,len(subset)): # create a string out of the subset elements
+            temp_sub_str=temp_sub_str+str(subset[i])
+            if (i<(len(subset)-1)):
+                temp_sub_str=temp_sub_str+" "
+        output_file.write(temp_sub_str+"\n") # add that string version of the subset to the outfile
+        output_file.write(str(weights[counter])+"\n") # this is hardcoded to insert the first element of weights, change
+    output_file.close()
+
+def read_input_file(filename):
+    with open(filename) as file:
+        lines = file.readlines()
+    stripped = []
+    for line in lines:
+        stripped.append(line.rstrip())
+
+    n = int(stripped.pop(0))
+    set_number = int(stripped.pop(0))
+    sets = []
+    weights = []
+
+    on_set = True
+    for line in stripped:
+        if on_set:
+            sets.append([int(s) for s in line.split(' ')])
+            on_set = False
+        else:
+            weights.append(float(line))
+            on_set = True
+
+    return (sets, weights, n, set_number)
 
 ####################################
 #    Part 2: Linear Programming    #
@@ -49,11 +114,8 @@ def mathematica_solve(sets, weights, n, set_number):
 def simplex_solver(sets,weights,n,set_number):
     A = [[-1 if j in s else 0 for s in sets] for j in range(1, n+1)]
     b = [-1 for i in range(n)]
-  #  print(b)
-   # print(A)
     X_star = scipy.optimize.linprog(weights,A_ub=A,b_ub=b,bounds=(0,1))
     return X_star.x
-
 
 ###############################
 # Part 3: Randomized Rounding #
@@ -62,8 +124,6 @@ def simplex_solver(sets,weights,n,set_number):
 
 def randomized_rounding(sets, weights, n, set_number):
     U = list(range(1, n+1 ))
-    # X_star = simplex_solver(sets,weights,n,set_number) #1D array of probs
-    # X_star = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5] #REMOVE
     X_star = [0.5 for i in range(0,set_number)]
     cover_weight = 0
     cover = []
@@ -90,14 +150,12 @@ def randomized_rounding(sets, weights, n, set_number):
 
     return (cover, cover_weight, cover_inds)
 
-
 ############################
 # Part 4: Greedy Algorithm #
 ############################
 
 def greedy(s, w):
     return 0
-
 
 ####################################
 # Part 5: Trivial Random Algorithm #
@@ -166,84 +224,11 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
 ###########################
 # Part 7: Generate Inputs #
 ###########################
-
-def generate_input(n, num_subsets, max_subset_length):
-    num_items_in_union = n # english translation because all of these n's are ~*confusing*~
-    subsets = []
-    weights = []
-    for i in range(0,num_subsets):
-        # make subsets
-        sub_temp = []
-        rand_sub_len = random.randint(1,max_subset_length)
-        for j in range(0,rand_sub_len):
-            sub_temp.append(random.randint(1,n))
-        subsets.append(sub_temp)
-
-        # make weight list
-        weights.append(random.randint(1,1000)) # making up fake weights
-
-    contents_of_subsets = [item for sublist in subsets for item in sublist]
-    contents_of_subsets = list(set(contents_of_subsets))
-    union = list(range(1, num_items_in_union+1 ))
-    while (contents_of_subsets != union): # if not all of the numbers are in the subsets, replace last subset until they are
-        # make subsets
-        sub_temp = []
-        rand_sub_len = random.randint(1,max_subset_length)
-        for j in range(0,rand_sub_len):
-            sub_temp.append(random.randint(1,n))
-        subsets.pop()
-        subsets.append(sub_temp)
-
-        # update contents_of_sets
-        contents_of_subsets = [item for sublist in subsets for item in sublist]
-        contents_of_subsets = list(set(contents_of_subsets))
-
-    return (subsets, weights, num_items_in_union, num_subsets)
-
-def print_input_to_file(num_elements, subsets, weights):
-    output_file = open("rando-algs-input.txt", 'w')
-    output_file.write(str(num_elements)+"\n")
-    output_file.write(str(len(subsets))+"\n")
-    counter = -1
-    for subset in subsets: # for each subset in the subset array
-        counter+=1
-        temp_sub_str = ""
-        for i in range(0,len(subset)): # create a string out of the subset elements
-            temp_sub_str=temp_sub_str+str(subset[i])
-            if (i<(len(subset)-1)):
-                temp_sub_str=temp_sub_str+" "
-        output_file.write(temp_sub_str+"\n") # add that string version of the subset to the outfile
-        output_file.write(str(weights[counter])+"\n") # this is hardcoded to insert the first element of weights, change
-    output_file.close()
-
-def read_input_file(filename):
-    with open(filename) as file:
-        lines = file.readlines()
-    stripped = []
-    for line in lines:
-        stripped.append(line.rstrip())
-
-    n = int(stripped[0])
-    set_number = int(stripped[1])
-    sets = []
-    weights = []
-
-    for i in range(2,set_number+4,2):
-        # sets.append(lines[i])
-        temp_sub = []
-        for char in stripped[i]:
-            if (char != ' '):
-                temp_sub.append(int(char))
-        sets.append(temp_sub)
-        weights.append(float(stripped[i+1]))
-    
-    return (sets, weights, n, set_number)
-
 #sets, weights, n, set_number = read_input_file("rando-algs-input.txt");
 #print(mathematica_solve(sets, weights, n, set_number))
 #exit(0)
 #####################
-# Part 8: Code Time #
+# Part 7: Code Time #
 #####################
 
 def elise_verbose_output(): # this prints useful info and the input file to elise_verbose_out.txt
@@ -274,8 +259,6 @@ def elise_verbose_output(): # this prints useful info and the input file to elis
 
     f1.close()
     f2.close()
-
-# run_random_trials()
 
 # test list of 10
 # sets = [[1,2], [1,3], [2,3], [4,5], [6,7], [8,9], [9,10], [1,2,3], [4,8,3,2], [1,4,8], [4,2,5]]
