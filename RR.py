@@ -5,6 +5,7 @@
 
 import random
 import scipy.optimize
+import sys
 
 ###########################
 #  Part 1: inputs  #
@@ -118,7 +119,7 @@ def simplex_solver(sets,weights,n,set_number):
 
 def randomized_rounding(sets, weights, n, set_number):
     U = list(range(1, n+1 ))
-    X_star = [0.5 for i in range(0,set_number)]
+    X_star = simplex_solver(sets,weights,n,set_number) #1D array of probs
     cover_weight = 0
     cover = []
     cover_inds = []
@@ -213,13 +214,13 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
             best_cover = cover
     print("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight))
     return(best_cover, best_cover_weight, cover_frequency,weight_frequency, cover_inds)
-    # print("Contents of best cover: "+str(best_cover))
 
 #########################
 # Part 7: Verify Output #
 #########################
 
 def verify_output(sets, weights, n, set_number, outputfile):
+    goodAnswer = True
     with open(outputfile) as file:
         unclean_lines = file.readlines()
     lines = []
@@ -235,14 +236,16 @@ def verify_output(sets, weights, n, set_number, outputfile):
     for ind in chosen_set_inds:
         weight += weights[ind]
         chosen_sets.append(sets[ind])
-
         
     if (weight != int(soln_weight)):
         print("Solution weight (", soln_weight, ") does not match the weights of the chosen sets (", weight, ")")
+        goodAnswer = False
     flattened_sets = list(set([j for sub in chosen_sets for j in sub]))
     flattened_sets = sorted(flattened_sets)
     if ( flattened_sets != U):
         print("set cover (", flattened_sets, ") != U (", U, ")")
+        goodAnswer = False
+    return goodAnswer
 
 #####################
 # Part 7: Code Time #
@@ -277,34 +280,23 @@ def elise_verbose_output(): # this prints useful info and the input file to elis
     f1.close()
     f2.close()
 
-# test list of 10
-# sets = [[1,2], [1,3], [2,3], [4,5], [6,7], [8,9], [9,10], [1,2,3], [4,8,3,2], [1,4,8], [4,2,5]]
-# set_number = 11
-# weights = [1,5,7,3,4,6,8,4,3,7,3]
-# n = 10 #U constructor
-# run_random_rounding_n_times(10, sets, weights, n, set_number)
+#elise_verbose_output()
 
-# test the input generator
-# (subs, dubs, n, num_subs) = generate_input(5, 10, 3)
-# print("Subsets: "+str(subs)+"\nWeights: "+str(dubs)+"\nN: "+str(n)+"\nNumber of Subsets: "+str(len(subs)))
-# print_input_to_file(n, subs, dubs)
+def run_RR(inputfile):
+    input_params = read_input_file(inputfile)
+    sets = input_params[0]
+    weights = input_params[1]
+    n = input_params[2]
+    set_number = input_params[3]
+    alg_output = run_random_rounding_n_times(100, sets, weights, n, set_number)
+    output_file = open("answer.txt", 'w')
+    output_file.write(alg_output[1])
+    output_file.write(str(alg_output[4]))
+    output_file.close()
+    goodAnswer = verify_output(sets, weights, n, set_number, output_file)
+    if(goodAnswer == False):
+        output_file.open("answer.txt", 'w')
+        output_file.write("BAD ANSWER")
+        output_file.close()
 
-# test a max input generator file
-# (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
-# print_input_to_file(n, subs, dubs)
-
-# test a max big input on the RR alg (params: n<=1000, num_subsets<=500, max_subset_size=n)
-# (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
-# (cov_freq, cov_weight_freq) = run_random_rounding_n_times(10000, subs, dubs, n, num_subs)
-# from collections import Counter
-# print("Freq of cover trial covers: "+str(Counter(cov_freq.values())))
-# print("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values())))
-
-elise_verbose_output()
-
-# test file input parsing
-# (sets, weights, n, set_number) = read_input_file("rando-algs-input.txt")
-# print(sets)
-# print(weights)
-# print(n)
-# print(set_number)
+run_RR("rando-algs-input.txt")
