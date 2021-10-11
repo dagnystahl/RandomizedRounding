@@ -221,12 +221,35 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
     return(best_cover, best_cover_weight, cover_frequency,weight_frequency, cover_inds)
     # print("Contents of best cover: "+str(best_cover))
 
-###########################
-# Part 7: Generate Inputs #
-###########################
-#sets, weights, n, set_number = read_input_file("rando-algs-input.txt");
-#print(mathematica_solve(sets, weights, n, set_number))
-#exit(0)
+#########################
+# Part 7: Verify Output #
+#########################
+
+def verify_output(sets, weights, n, set_number, outputfile):
+    with open(outputfile) as file:
+        unclean_lines = file.readlines()
+    lines = []
+    for line in unclean_lines:
+        lines.append(line.rstrip())
+        
+    U = list(range( 1, n+1 ))
+    soln_weight = lines[0]
+    chosen_set_inds = [(int(s) -1 ) for s in lines[1].split(' ')]
+
+    weight = 0
+    chosen_sets = []
+    for ind in chosen_set_inds:
+        weight += weights[ind]
+        chosen_sets.append(sets[ind])
+
+        
+    if (weight != int(soln_weight)):
+        print("Solution weight (", soln_weight, ") does not match the weights of the chosen sets (", weight, ")")
+    flattened_sets = list(set([j for sub in chosen_sets for j in sub]))
+    flattened_sets = sorted(flattened_sets)
+    if ( flattened_sets != U):
+        print("set cover (", flattened_sets, ") != U (", U, ")")
+
 #####################
 # Part 7: Code Time #
 #####################
