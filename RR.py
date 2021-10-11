@@ -92,12 +92,6 @@ def mathematica_solve(sets, weights, n, set_number):
     c = weights
     lu = [[0, 1] for i in range(set_number)]
 
-    print(len(weights))
-    print(len(A), len(A[0]))
-    print(len(lu), len(lu[0]))
-
-    return ""
-    
     # turns python-style vectors and matrices into mathematica
     def mize(v):
         return str(v).replace('[', '{').replace(']', '}')
