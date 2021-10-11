@@ -194,6 +194,7 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
     best_cover_weight = 99999
     cover_frequency = {}
     weight_frequency = {}
+    best_cov_inds = []
     simp = simplex_solver(sets,weights,n,set_number) #1D array of probs
     for i in range(1,iters+1):
         print("Running trial #"+str(i))
@@ -213,8 +214,9 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
         if (cover_weight < best_cover_weight):
             best_cover_weight = cover_weight
             best_cover = cover
+            best_cov_inds = cover_inds
     print("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight))
-    return(best_cover, best_cover_weight, cover_frequency,weight_frequency, cover_inds)
+    return(best_cover, best_cover_weight, cover_frequency,weight_frequency, best_cov_inds)
 
 #########################
 # Part 7: Verify Output #
@@ -230,7 +232,7 @@ def verify_output(sets, weights, n, set_number, outputfile):
         
     U = list(range( 1, n+1 ))
     soln_weight = lines[0]
-    chosen_set_inds = [(int(s) -1 ) for s in lines[1].split(' ')]
+    chosen_set_inds = [(int(s) - 1 ) for s in lines[1].split(' ')]
 
     weight = 0
     chosen_sets = []
@@ -239,7 +241,7 @@ def verify_output(sets, weights, n, set_number, outputfile):
         chosen_sets.append(sets[ind])
         
     if (weight != int(soln_weight)):
-        print("Solution weight (", soln_weight, ") does not match the weights of the chosen sets (", weight, ")")
+        print("Solution weight (", soln_weight, ") does not match the weights of the chosen sets (", int(weight), ")")
         goodAnswer = False
     flattened_sets = list(set([j for sub in chosen_sets for j in sub]))
     flattened_sets = sorted(flattened_sets)
@@ -305,11 +307,10 @@ def run_RR(inputfile):
         output_file.close()
         '''
 
-# run_RR("rando-algs-input.txt")
+run_RR("rando-algs-input.txt")
 
-
-input_num_max = 20
-input_num_of_subs = 50
-input_max_sub_size = 6
-(subs, dubs, n, num_subs) = generate_input(input_num_max, input_num_of_subs, input_max_sub_size)
-print_input_to_file(n, subs, dubs)
+# input_num_max = 500
+# input_num_of_subs = 200
+# input_max_sub_size = 50
+# (subs, dubs, n, num_subs) = generate_input(input_num_max, input_num_of_subs, input_max_sub_size)
+# print_input_to_file(n, subs, dubs)
