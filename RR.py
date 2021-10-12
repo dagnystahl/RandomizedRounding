@@ -274,7 +274,7 @@ def run_RR(inputfile, num):
     n = input_params[2]
     set_number = input_params[3]
     alg_output = run_random_rounding_n_times(100000, sets, weights, n, set_number)
-    name_out = "outputs/output_group"+num+".txt"
+    name_out = "outputs/output_group"+num+"-1.txt"
     output_file = open(name_out, 'w')
     output_file.write(str(int(alg_output[1])))
     output_file.write("\n")
