@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 #############################
 #    Randomized Rounding    #
 # Dagny, Luke, Elise, Kylee #
@@ -92,7 +93,7 @@ def mathematica_solve(sets, weights, n, set_number):
     b = [1 for i in range(n)]
     c = weights
     lu = [[0, 1] for i in range(set_number)]
-
+    
     # turns python-style vectors and matrices into mathematica
     def mize(v):
         return str(v).replace('[', '{').replace(']', '}')
@@ -104,6 +105,44 @@ def mathematica_solve(sets, weights, n, set_number):
         LU = {mize(lu)};
         LinearProgramming[c, A, b, LU, Integers]
     """
+
+def mathematica_parse(sets, weights, n, set_number):
+    input_string = "{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, \
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, \
+1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, \
+1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, \
+0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, \
+0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, \
+0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}"
+
+    parsed = input_string.replace("{", "").replace("}", "").split(",")
+    parsed = [int(i) for i in parsed]
+    final = ""
+    
+    weight = 0
+    for i, xi in enumerate(parsed):
+        if xi == 1:
+            weight += weights[i]
+            final += f"{i} "
+
+    print(weight)
+    print(final)
+
     
 # x* = simplex(...)
 def simplex_solver(sets,weights,n,set_number):
@@ -299,4 +338,34 @@ def run_RR(inputfile):
         output_file.write("BAD ANSWER")
         output_file.close()
 
-run_RR("rando-algs-input.txt")
+
+# test list of 10
+# sets = [[1,2], [1,3], [2,3], [4,5], [6,7], [8,9], [9,10], [1,2,3], [4,8,3,2], [1,4,8], [4,2,5]]
+# set_number = 11
+# weights = [1,5,7,3,4,6,8,4,3,7,3]
+# n = 10 #U constructor
+# run_random_rounding_n_times(10, sets, weights, n, set_number)
+
+# test the input generator
+# (subs, dubs, n, num_subs) = generate_input(5, 10, 3)
+# print("Subsets: "+str(subs)+"\nWeights: "+str(dubs)+"\nN: "+str(n)+"\nNumber of Subsets: "+str(len(subs)))
+# print_input_to_file(n, subs, dubs)
+
+# test a max input generator file
+# (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
+# print_input_to_file(n, subs, dubs)
+
+# test a max big input on the RR alg (params: n<=1000, num_subsets<=500, max_subset_size=n)
+# (subs, dubs, n, num_subs) = generate_input(1000, 500, 250)
+# (cov_freq, cov_weight_freq) = run_random_rounding_n_times(10000, subs, dubs, n, num_subs)
+# from collections import Counter
+# print("Freq of cover trial covers: "+str(Counter(cov_freq.values())))
+# print("Freq of cover trial weights: "+str(Counter(cov_weight_freq.values())))
+
+#elise_verbose_output()
+
+# test file input parsing
+sets, weights, n, set_number = read_input_file("rando-algs-input.txt");
+#print(mathematica_solve(sets, weights, n, set_number))
+mathematica_parse(sets, weights, n, set_number)
+#run_RR("rando-algs-input.txt")
