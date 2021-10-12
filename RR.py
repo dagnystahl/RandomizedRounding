@@ -45,7 +45,7 @@ def generate_input(n, num_subsets, max_subset_length):
     return (subsets, weights, num_items_in_union, num_subsets)
 
 def print_input_to_file(num_elements, subsets, weights):
-    output_file = open("rando-algs-input.txt", 'w')
+    output_file = open("rando-algs-input-small.txt", 'w')
     output_file.write(str(num_elements)+"\n")
     output_file.write(str(len(subsets))+"\n")
     counter = -1
@@ -156,9 +156,9 @@ def simplex_solver(sets,weights,n,set_number):
 #   finding a valid solution  #
 ###############################
 
-def randomized_rounding(sets, weights, n, set_number):
+def randomized_rounding(sets, weights, n, set_number, simp_array):
     U = list(range(1, n+1 ))
-    X_star = simplex_solver(sets,weights,n,set_number) #1D array of probs
+    X_star = simp_array #simplex_solver(sets,weights,n,set_number) #1D array of probs
     cover_weight = 0
     cover = []
     cover_inds = []
@@ -202,40 +202,42 @@ def trivial_random(s, w):
 # Part 6: Testing RR Algorithm #
 ################################
 
-def run_random_trials():
+# def run_random_trials():
 
-    # test list of 3
-    sets = [[1,2], [1,3], [2,3]]
-    set_number = 3
-    weights = [1,1,1]
-    n = 3 #U constructor
+#     # test list of 3
+#     sets = [[1,2], [1,3], [2,3]]
+#     set_number = 3
+#     weights = [1,1,1]
+#     n = 3 #U constructor
 
-    print(randomized_rounding(sets, weights, n, set_number))
+#     print(randomized_rounding(sets, weights, n, set_number))
 
-    # test list of 5
-    sets = [[1,2], [1,3], [2,3], [5], [1,4], [5,3], [4,2]]
-    set_number = 7
-    weights = [1,9,1,5,8,2,2]
-    n = 5 #U constructor
+#     # test list of 5
+#     sets = [[1,2], [1,3], [2,3], [5], [1,4], [5,3], [4,2]]
+#     set_number = 7
+#     weights = [1,9,1,5,8,2,2]
+#     n = 5 #U constructor
 
-    print(randomized_rounding(sets, weights, n, set_number))
+#     print(randomized_rounding(sets, weights, n, set_number))
 
-    # test list of 10
-    sets = [[1,2], [1,3], [2,3], [4,5], [6,7], [8,9], [9,10], [1,2,3], [4,8,3,2], [1,4,8], [4,2,5]]
-    set_number = 11
-    weights = [1,5,7,3,4,6,8,4,3,7,3]
-    n = 10 #U constructor
+#     # test list of 10
+#     sets = [[1,2], [1,3], [2,3], [4,5], [6,7], [8,9], [9,10], [1,2,3], [4,8,3,2], [1,4,8], [4,2,5]]
+#     set_number = 11
+#     weights = [1,5,7,3,4,6,8,4,3,7,3]
+#     n = 10 #U constructor
 
-    print(randomized_rounding(sets, weights, n, set_number))
+#     print(randomized_rounding(sets, weights, n, set_number))
 
 def run_random_rounding_n_times(iters, sets, weights, n, set_number):
     best_cover = []
     best_cover_weight = 99999
     cover_frequency = {}
     weight_frequency = {}
+    best_cov_inds = []
+    simp = simplex_solver(sets,weights,n,set_number) #1D array of probs
     for i in range(1,iters+1):
         print("Running trial #"+str(i))
-        (cover, cover_weight, cover_inds) = randomized_rounding(sets, weights, n, set_number)
+        (cover, cover_weight, cover_inds) = randomized_rounding(sets, weights, n, set_number, simp)
         cover.sort()
         # print("Cover has "+str(len(cover))+" items and weight "+str(cover_weight))
         # count cover frequency
@@ -251,8 +253,9 @@ def run_random_rounding_n_times(iters, sets, weights, n, set_number):
         if (cover_weight < best_cover_weight):
             best_cover_weight = cover_weight
             best_cover = cover
+            best_cov_inds = cover_inds
     print("Best cover has "+str(len(best_cover))+" items and weight "+str(best_cover_weight))
-    return(best_cover, best_cover_weight, cover_frequency,weight_frequency, cover_inds)
+    return(best_cover, best_cover_weight, cover_frequency,weight_frequency, best_cov_inds)
 
 #########################
 # Part 7: Verify Output #
@@ -268,7 +271,7 @@ def verify_output(sets, weights, n, set_number, outputfile):
         
     U = list(range( 1, n+1 ))
     soln_weight = lines[0]
-    chosen_set_inds = [(int(s) -1 ) for s in lines[1].split(' ')]
+    chosen_set_inds = [(int(s) - 1 ) for s in lines[1].split(' ')]
 
     weight = 0
     chosen_sets = []
@@ -277,7 +280,7 @@ def verify_output(sets, weights, n, set_number, outputfile):
         chosen_sets.append(sets[ind])
         
     if (weight != int(soln_weight)):
-        print("Solution weight (", soln_weight, ") does not match the weights of the chosen sets (", weight, ")")
+        print("Solution weight (", soln_weight, ") does not match the weights of the chosen sets (", int(weight), ")")
         goodAnswer = False
     flattened_sets = list(set([j for sub in chosen_sets for j in sub]))
     flattened_sets = sorted(flattened_sets)
@@ -329,14 +332,19 @@ def run_RR(inputfile):
     set_number = input_params[3]
     alg_output = run_random_rounding_n_times(100, sets, weights, n, set_number)
     output_file = open("answer.txt", 'w')
-    output_file.write(alg_output[1])
-    output_file.write(str(alg_output[4]))
+    output_file.write(str(int(alg_output[1])))
+    output_file.write("\n")
+    for index in alg_output[4]:
+        output_file.write(str(index) + " ")
     output_file.close()
-    goodAnswer = verify_output(sets, weights, n, set_number, output_file)
+
+    goodAnswer = verify_output(sets, weights, n, set_number, "answer.txt")
+    '''
     if(goodAnswer == False):
         output_file.open("answer.txt", 'w')
         output_file.write("BAD ANSWER")
         output_file.close()
+        '''
 
 
 # test list of 10
@@ -368,4 +376,10 @@ def run_RR(inputfile):
 sets, weights, n, set_number = read_input_file("rando-algs-input.txt");
 #print(mathematica_solve(sets, weights, n, set_number))
 mathematica_parse(sets, weights, n, set_number)
-#run_RR("rando-algs-input.txt")
+run_RR("rando-algs-input.txt")
+
+# input_num_max = 500
+# input_num_of_subs = 200
+# input_max_sub_size = 50
+# (subs, dubs, n, num_subs) = generate_input(input_num_max, input_num_of_subs, input_max_sub_size)
+# print_input_to_file(n, subs, dubs)
