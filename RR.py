@@ -232,6 +232,40 @@ def verify_output(sets, weights, n, set_number, outputfile):
         goodAnswer = False
     return goodAnswer
 
+def verify_output_from_inputfile(inputfile, outputfile):
+    input_params = read_input_file(inputfile)
+    sets = input_params[0]
+    weights = input_params[1]
+    n = input_params[2]
+    set_number = input_params[3]
+
+    goodAnswer = True
+    with open(outputfile) as file:
+        unclean_lines = file.readlines()
+    lines = []
+    for line in unclean_lines:
+        lines.append(line.rstrip())
+        
+    U = list(range( 1, n+1 ))
+    soln_weight = lines[0]
+    chosen_set_inds = [(int(s) - 1 ) for s in lines[1].split(' ')]
+
+    weight = 0
+    chosen_sets = []
+    for ind in chosen_set_inds:
+        weight += weights[ind]
+        chosen_sets.append(sets[ind])
+        
+    if (weight != int(soln_weight)):
+        print("Solution weight (", soln_weight, ") does not match the weights of the chosen sets (", int(weight), ")")
+        goodAnswer = False
+    flattened_sets = list(set([j for sub in chosen_sets for j in sub]))
+    flattened_sets = sorted(flattened_sets)
+    if ( flattened_sets != U):
+        print("set cover (", flattened_sets, ") != U (", U, ")")
+        goodAnswer = False
+    return goodAnswer
+
 #####################
 # Part 7: Code Time #
 #####################
