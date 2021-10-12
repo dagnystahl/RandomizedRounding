@@ -87,63 +87,6 @@ def read_input_file(filename):
 #    Part 2: Linear Programming    #
 # finding the partial set Solution #
 ####################################
-def mathematica_solve(sets, weights, n, set_number):
-    # Mathematica uses A.x >= b rather than A.x <= b
-    A = [[1 if j in s else 0 for s in sets] for j in range(1, n+1)]
-    b = [1 for i in range(n)]
-    c = weights
-    lu = [[0, 1] for i in range(set_number)]
-    
-    # turns python-style vectors and matrices into mathematica
-    def mize(v):
-        return str(v).replace('[', '{').replace(']', '}')
-
-    return f"""
-        A = {mize(A)};
-        c = {mize(c)};
-        b = {mize(b)};
-        LU = {mize(lu)};
-        LinearProgramming[c, A, b, LU, Integers]
-    """
-
-def mathematica_parse(sets, weights, n, set_number):
-    input_string = "{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, \
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, \
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, \
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, \
-0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, \
-0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, \
-0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}"
-
-    parsed = input_string.replace("{", "").replace("}", "").split(",")
-    parsed = [int(i) for i in parsed]
-    final = ""
-    
-    weight = 0
-    for i, xi in enumerate(parsed):
-        if xi == 1:
-            weight += weights[i]
-            final += f"{i} "
-
-    print(weight)
-    print(final)
-
-    
 # x* = simplex(...)
 def simplex_solver(sets,weights,n,set_number):
     A = [[-1 if j in s else 0 for s in sets] for j in range(1, n+1)]
@@ -373,13 +316,17 @@ def run_RR(inputfile):
 #elise_verbose_output()
 
 # test file input parsing
-sets, weights, n, set_number = read_input_file("rando-algs-input.txt");
 #print(mathematica_solve(sets, weights, n, set_number))
-mathematica_parse(sets, weights, n, set_number)
-run_RR("rando-algs-input.txt")
+
 
 # input_num_max = 500
 # input_num_of_subs = 200
 # input_max_sub_size = 50
 # (subs, dubs, n, num_subs) = generate_input(input_num_max, input_num_of_subs, input_max_sub_size)
 # print_input_to_file(n, subs, dubs)
+
+
+# Only run this code if we are not being included, but actually being ran
+# Great for code re-use!
+if __name__ == "__main__":
+    run_RR("rando-algs-input.txt")
