@@ -267,21 +267,22 @@ def elise_verbose_output(): # this prints useful info and the input file to elis
 
 #elise_verbose_output()
 
-def run_RR(inputfile):
+def run_RR(inputfile, num):
     input_params = read_input_file(inputfile)
     sets = input_params[0]
     weights = input_params[1]
     n = input_params[2]
     set_number = input_params[3]
-    alg_output = run_random_rounding_n_times(100, sets, weights, n, set_number)
-    output_file = open("answer.txt", 'w')
+    alg_output = run_random_rounding_n_times(100000, sets, weights, n, set_number)
+    name_out = "outputs/output_group"+num+".txt"
+    output_file = open(name_out, 'w')
     output_file.write(str(int(alg_output[1])))
     output_file.write("\n")
     for index in alg_output[4]:
         output_file.write(str(index) + " ")
     output_file.close()
 
-    goodAnswer = verify_output(sets, weights, n, set_number, "answer.txt")
+    goodAnswer = verify_output(sets, weights, n, set_number, name_out)
     '''
     if(goodAnswer == False):
         output_file.open("answer.txt", 'w')
@@ -328,5 +329,9 @@ def run_RR(inputfile):
 
 # Only run this code if we are not being included, but actually being ran
 # Great for code re-use!
+
+group_nums = ["297", "298", "299", "301", "302", "306", "307", "308", "309", "310", "311", "313", "315", "316", "317", "318", "326", "339"]
+
 if __name__ == "__main__":
-    run_RR("rando-algs-input.txt")
+    for item in group_nums:
+        run_RR("inputs/input_group"+item+".txt", item)
